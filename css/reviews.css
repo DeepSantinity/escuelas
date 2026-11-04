@@ -1,0 +1,557 @@
+.school-popup .leaflet-popup-content-wrapper {
+  border: 1px solid #dce6de;
+  border-radius: 12px;
+  max-height: min(650px, calc(100vh - 48px));
+  overflow-y: auto;
+  box-shadow: 0 16px 42px #172b2a30;
+}
+
+.school-popup .leaflet-popup-content {
+  width: 340px !important;
+  max-width: calc(100vw - 56px);
+}
+
+.school-card {
+  border-radius: 11px;
+}
+
+.school-card-head {
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 12px;
+  padding: 17px 40px 15px 16px;
+  background: linear-gradient(135deg, #f1f8f2, #fff 78%);
+}
+
+.school-card-symbol {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+}
+
+.school-card-category {
+  margin-bottom: 6px;
+  font-size: 9px;
+  letter-spacing: 0.8px;
+}
+
+.school-card-title {
+  font-size: 15px;
+  line-height: 1.35;
+}
+
+.school-card-body {
+  padding: 5px 16px 14px;
+}
+
+.school-card-row {
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 10px;
+  padding-top: 11px;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.school-card-stats {
+  gap: 10px;
+  margin-top: 14px;
+  padding-top: 13px;
+}
+
+.school-card-stat small {
+  font-size: 10px;
+}
+
+.school-card-stat strong {
+  font-size: 12px;
+}
+
+.school-reviews {
+  margin: 0 15px;
+  padding: 13px 0 14px;
+  border-top: 1px solid #edf0ed;
+}
+
+.reviews-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.reviews-title::before {
+  color: #bd8425;
+  content: "★";
+  font-size: 15px;
+}
+
+.reviews-list {
+  max-height: 150px;
+  gap: 7px;
+}
+
+.review-item {
+  padding: 10px;
+  background: #f6f8f6;
+  border: 1px solid #edf0ed;
+  border-radius: 8px;
+}
+
+.review-author {
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.review-rating {
+  font-size: 12px;
+}
+
+.review-content {
+  margin-top: 7px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.review-date {
+  margin-top: 7px;
+  font-size: 10px;
+}
+
+.review-form-host {
+  margin-top: 11px;
+}
+
+.review-form {
+  gap: 9px;
+}
+
+.review-rating-label {
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.review-rating-label select,
+.review-form textarea {
+  padding: 9px 10px;
+  border-radius: 7px;
+  font-size: 12px;
+}
+
+.review-form textarea {
+  min-height: 72px;
+}
+
+.review-submit,
+.review-login {
+  min-height: 34px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.school-card-actions {
+  padding: 12px 15px;
+}
+
+.school-card-action {
+  min-height: 35px;
+  padding: 0 12px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.school-reviews {
+  margin-top: 13px;
+  padding-top: 11px;
+  border-top: 1px solid var(--line);
+}
+
+.reviews-title {
+  margin: 0 0 8px;
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.reviews-list {
+  display: grid;
+  gap: 8px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.reviews-empty,
+.reviews-login-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.review-item {
+  padding: 8px;
+  background: #f7f9f7;
+  border-radius: 5px;
+}
+
+.review-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.review-identity {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  gap: 7px;
+}
+
+.review-avatar {
+  width: 24px;
+  height: 24px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--mint);
+}
+
+.review-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.review-avatar-fallback {
+  display: grid;
+  place-items: center;
+  color: var(--green);
+  font-size: 10px;
+  font-weight: 750;
+}
+
+.review-author {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 11px;
+  text-overflow: ellipsis;
+}
+
+.review-rating {
+  flex: 0 0 auto;
+  color: #bd8425;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.review-content {
+  margin: 5px 0 0;
+  color: #465650;
+  font-size: 11px;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.review-date {
+  display: block;
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.review-form-host {
+  margin-top: 9px;
+}
+
+.review-form {
+  display: grid;
+  gap: 7px;
+}
+
+.review-rating-label {
+  display: grid;
+  gap: 5px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.review-rating-label select,
+.review-form textarea {
+  width: 100%;
+  padding: 7px 8px;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font: inherit;
+  font-size: 11px;
+}
+
+.review-form textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+.review-submit,
+.review-login {
+  justify-self: start;
+  padding: 7px 10px;
+  color: #fff;
+  background: var(--green);
+  border: 0;
+  border-radius: 5px;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.review-submit:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.review-login {
+  color: var(--green);
+  background: var(--mint);
+}
+
+.school-popup .leaflet-popup-content-wrapper {
+  max-height: none;
+  overflow: hidden;
+}
+
+.school-popup .leaflet-popup-content {
+  width: 260px !important;
+  max-width: calc(100vw - 72px);
+  max-height: min(420px, calc(100vh - 140px)) !important;
+  max-height: min(420px, calc(100dvh - 140px)) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  margin: 0;
+  scrollbar-color: #aab8af #f3f6f3;
+  scrollbar-width: thin;
+}
+
+.school-card-head {
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 9px;
+  padding: 12px 36px 11px 12px;
+}
+
+.school-card-symbol {
+  width: 36px;
+  height: 36px;
+}
+
+.school-card-title {
+  font-size: 13px;
+}
+
+.school-card-body {
+  padding: 3px 12px 10px;
+}
+
+.school-card-row {
+  grid-template-columns: 16px minmax(0, 1fr);
+  gap: 7px;
+  padding-top: 8px;
+  font-size: 11px;
+}
+
+.school-card-stats {
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 9px;
+}
+
+.school-reviews {
+  margin: 0 12px;
+  padding: 10px 0;
+}
+
+.reviews-list {
+  max-height: 120px;
+  overflow-y: auto;
+  scrollbar-color: #aab8af #f3f6f3;
+  scrollbar-width: thin;
+}
+
+.review-item {
+  padding: 7px 8px;
+}
+
+.review-form-host {
+  margin-top: 8px;
+}
+
+.review-form textarea {
+  min-height: 54px;
+}
+
+.school-card-actions {
+  padding: 9px 12px;
+}
+
+.school-card-action {
+  min-height: 32px;
+}
+
+.fed-administrative-details {
+  margin-top: 13px;
+  padding: 11px 10px 10px;
+  background: #f7f9f7;
+  border-top: 1px solid var(--line);
+  border-radius: 6px;
+}
+
+.fed-administrative-list {
+  display: grid;
+  gap: 8px;
+}
+
+.fed-administrative-person {
+  display: grid;
+  gap: 3px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid var(--line);
+  font-size: 10px;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.fed-administrative-person:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}
+
+.fed-administrative-person strong {
+  color: var(--ink);
+  font-size: 11px;
+}
+
+.fed-administrative-person span {
+  color: var(--muted);
+}
+
+.fed-administrative-form-host {
+  margin-top: 9px;
+}
+
+.fed-administrative-form {
+  display: grid;
+  gap: 7px;
+  padding-top: 9px;
+  border-top: 1px solid var(--line);
+}
+
+.fed-administrative-form label {
+  display: grid;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 650;
+}
+
+.fed-administrative-form input,
+.fed-administrative-form select {
+  width: 100%;
+  min-height: 32px;
+  padding: 6px 8px;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  font: inherit;
+  font-size: 11px;
+}
+
+.fed-administrative-form .review-submit {
+  margin-top: 3px;
+}
+
+.school-popup .leaflet-popup-content {
+  width: 340px !important;
+  max-width: calc(100vw - 56px);
+}
+
+.school-popup .leaflet-popup-content-wrapper {
+  border-color: #dce7de;
+  border-radius: 13px;
+  box-shadow: 0 18px 48px #18332d2b;
+}
+
+.school-card {
+  background: #fff;
+}
+
+.school-card-head {
+  background: linear-gradient(135deg, #edf6ef 0%, #fff 82%);
+}
+
+.school-card-symbol {
+  box-shadow: inset 0 0 0 1px #18332d0a;
+}
+
+.school-card-actions {
+  background: #f8faf8;
+}
+
+.school-card-action {
+  border-color: #d8e5db;
+  border-radius: 8px;
+  transition: color .18s, background .18s, border-color .18s, transform .18s;
+}
+
+.school-card-action:hover {
+  color: #174d3a;
+  background: #eff6f0;
+  border-color: #bcd5c3;
+  transform: translateY(-1px);
+}
+
+.school-reviews {
+  border-top-color: #e5ece6;
+}
+
+.review-item {
+  border: 1px solid #e8eee9;
+  border-radius: 8px;
+}
+
+.review-form textarea,
+.review-rating-label select,
+.fed-administrative-form input,
+.fed-administrative-form select {
+  border-color: #dfe8e1;
+  border-radius: 8px;
+  transition: border-color .18s, box-shadow .18s;
+}
+
+.review-form textarea:focus,
+.review-rating-label select:focus,
+.fed-administrative-form input:focus,
+.fed-administrative-form select:focus {
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px #26705212;
+  outline: 0;
+}
+
+.review-submit,
+.review-login {
+  border-radius: 7px;
+  transition: background .18s, transform .18s, box-shadow .18s;
+}
+
+.review-submit:hover,
+.review-login:hover {
+  box-shadow: 0 4px 10px #18332d17;
+  transform: translateY(-1px);
+}
+
+@media(max-width:420px) {
+  .school-popup .leaflet-popup-content {
+    max-width: calc(100vw - 40px);
+  }
+}
