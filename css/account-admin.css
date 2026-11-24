@@ -1,0 +1,176 @@
+.tabs #users-tab {
+  display: none;
+}
+
+.tabs.admin-visible {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.tabs.admin-visible #users-tab {
+  display: flex;
+}
+
+.admin-content {
+  display: none;
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  padding: 18px;
+}
+
+.admin-content.active {
+  display: block;
+}
+
+.admin-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-heading h2 {
+  margin: 5px 0 0;
+  font-size: 17px;
+}
+
+.admin-heading .eyebrow {
+  margin: 0;
+}
+
+.admin-refresh {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--green);
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.admin-refresh:disabled,
+.fed-account-delete:disabled {
+  cursor: wait;
+  opacity: .6;
+}
+
+.admin-description {
+  margin: 9px 0 16px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.admin-status {
+  padding: 10px 11px;
+  border: 1px solid #e6ece7;
+  border-radius: 8px;
+  background: #f8faf8;
+  color: #64736b;
+  font-size: 11px;
+}
+
+.fed-accounts-list {
+  display: grid;
+}
+
+.fed-account-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 2px;
+  border-bottom: 1px solid #edf1ed;
+}
+
+.fed-account-identity {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+}
+
+.fed-account-identity strong {
+  overflow: hidden;
+  font-size: 11px;
+  text-overflow: ellipsis;
+}
+
+.fed-account-identity span {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 10px;
+  text-overflow: ellipsis;
+}
+
+.fed-account-delete {
+  flex: 0 0 auto;
+  padding: 7px 8px;
+  border: 1px solid #f0d7d3;
+  border-radius: 6px;
+  background: #fff;
+  color: #a3443a;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fed-account-delete:hover {
+  background: #fcf1ef;
+}
+
+.admin-create-button {
+  width: 100%;
+  margin-top: 16px;
+}
+
+.create-fed-account-form {
+  display: grid;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 13px;
+  border: 1px solid #e5ece6;
+  border-radius: 9px;
+  background: #fbfcfb;
+}
+
+.create-fed-account-form[hidden] {
+  display: none;
+}
+
+.create-fed-account-form label {
+  display: grid;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.create-fed-account-form input {
+  width: 100%;
+  height: 38px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  font-size: 12px;
+}
+
+.admin-form-actions {
+  display: grid;
+  gap: 8px;
+}
+
+.admin-form-actions .primary-button {
+  height: 40px;
+  font-size: 11px;
+}
+
+.admin-cancel-button {
+  min-height: 34px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #fff;
+  color: var(--muted);
+  font-size: 11px;
+  cursor: pointer;
+}

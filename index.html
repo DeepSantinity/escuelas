@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f6f7f4">
+  <link rel="manifest" href="./manifest.webmanifest">
   <title>Mapa Escolar | Buenos Aires</title>
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="preconnect" href="https://server.arcgisonline.com">
@@ -12,28 +13,51 @@
   <link rel="stylesheet" href="./css/account-profile.css">
   <link rel="stylesheet" href="./css/drawing-tools.css">
   <link rel="stylesheet" href="./css/reviews.css">
+  <link rel="stylesheet" href="./css/account-admin.css">
 </head>
 <body>
   <div class="app">
+    <div id="entry-modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop"></div>
+      <div class="modal-panel entry-panel" role="dialog" aria-modal="true" aria-labelledby="entry-title">
+        <div class="modal-header">
+          <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 4l9 5.5v9.8a.7.7 0 0 1-.7.7H3.7a.7.7 0 0 1-.7-.7z"/><path d="M8 20v-6h8v6M7.5 10h.01M12 10h.01M16.5 10h.01"/></svg></div>
+          <div>
+            <p class="modal-kicker">Mapa Escolar</p>
+            <h2 id="entry-title">¡Bienvenido/a!</h2>
+          </div>
+        </div>
+        <p class="entry-copy">Solicitá acceso institucional o explorá el mapa como invitado.</p>
+        <div class="entry-actions">
+          <button id="entry-request-access" class="primary-button" type="button">Pedir acceso institucional</button>
+          <button id="entry-guest" class="entry-guest-button" type="button">Entrar como invitado</button>
+        </div>
+        <p class="modal-footer">¿Ya tenés cuenta? <button id="entry-signin" class="text-button" type="button">Ingresar</button></p>
+      </div>
+    </div>
     <div id="account-modal" class="modal hidden" aria-hidden="true">
       <div class="modal-backdrop" data-close="account-modal"></div>
       <div class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="account-title">
-        <button class="modal-close" type="button" aria-label="Cerrar crear cuenta">×</button>
+        <button class="modal-close" type="button" aria-label="Cerrar"></button>
         <div class="modal-header">
           <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 4l9 5.5v9.8a.7.7 0 0 1-.7.7H3.7a.7.7 0 0 1-.7-.7z"/><path d="M8 20v-6h8v6M7.5 10h.01M12 10h.01M16.5 10h.01"/></svg></div>
           <div>
             <p class="modal-kicker">Acceso institucional</p>
-            <h2 id="account-title">Crear cuenta</h2>
+            <h2 id="account-title">Pedir acceso institucional</h2>
           </div>
         </div>
+        <p id="account-subtitle" class="modal-subtitle">Tu solicitud será evaluada por la institución. Si se aprueba, te informarán cómo obtener una cuenta F.E.D.</p>
         <form id="account-form" class="account-form" data-mode="signup">
-          <label data-field="fullName">
-            Nombre y apellido
-            <input type="text" name="fullName" placeholder="Ej.: María López">
+          <label data-field="fullName" hidden>
+            <input type="hidden" name="fullName">
           </label>
-          <label data-field="phone">
-            Teléfono
-            <input type="tel" name="phone" autocomplete="tel" inputmode="numeric" pattern="[0-9]*" maxlength="18" placeholder="Ej.: 1123456789">
+          <label data-field="firstName">
+            Nombre
+            <input type="text" name="firstName" autocomplete="given-name" maxlength="80" placeholder="Ej.: María">
+          </label>
+          <label data-field="lastName">
+            Apellido
+            <input type="text" name="lastName" autocomplete="family-name" maxlength="80" placeholder="Ej.: López">
           </label>
           <label data-field="email">
             Correo electrónico
@@ -41,20 +65,11 @@
           </label>
           <label data-field="password">
             Contraseña
-            <input type="password" name="password" placeholder="Mínimo 8 caracteres" minlength="8" required>
+            <input type="password" name="password" placeholder="Tu contraseña" autocomplete="current-password">
           </label>
-          <label data-field="role">
-            Tipo de usuario
-            <select name="role">
-              <option value="docente">Docente</option>
-              <option value="directivo">Directivo</option>
-              <option value="estudiante">Estudiante</option>
-              <option value="comunidad">Comunidad</option>
-            </select>
-          </label>
-          <button type="submit" class="primary-button">Crear cuenta</button>
+          <button type="submit" class="primary-button">Pedir acceso institucional</button>
         </form>
-        <p class="modal-footer">Ya tenés cuenta? <button type="button" class="text-button" data-close="account-modal" data-switch="signin">Ingresar</button></p>
+        <p class="modal-footer">¿Ya tenés cuenta? <button type="button" class="text-button" data-close="account-modal" data-switch="signin">Ingresar</button></p>
       </div>
     </div>
     <header class="topbar">
@@ -62,27 +77,38 @@
         <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9.5 12 4l9 5.5v9.8a.7.7 0 0 1-.7.7H3.7a.7.7 0 0 1-.7-.7z"/><path d="M8 20v-6h8v6M7.5 10h.01M12 10h.01M16.5 10h.01"/></svg></div>
         <div><div class="brand-name">Mapa Escolar</div><div class="brand-sub">Provincia de Buenos Aires</div></div>
       </div>
-      <div class="top-search-wrap"><svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="school-search" class="top-search" type="search" autocomplete="off" placeholder="Escuela, localidad, distrito o CUE..." aria-label="Buscar por escuela, localidad, distrito o CUE"><span class="shortcut">Buscar</span><div id="search-results" class="search-results" role="listbox"></div></div>
+      <div class="top-search-wrap"><svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="school-search" class="top-search" type="search" autocomplete="off" placeholder="Escuela, localidad, distrito o CUE..." aria-label="Buscar por escuela, localidad, distrito o CUE"><div id="search-results" class="search-results" role="listbox"></div></div>
       <div class="actions"><button id="sidebar-toggle" class="icon-button sidebar-toggle" type="button" aria-label="Abrir panel de capas" aria-expanded="false" title="Capas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><button id="account-access" class="quiet" type="button" aria-label="Ingresar o crear una cuenta" title="Ingresar o crear una cuenta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="m10 17 5-5-5-5M15 12H3"/></svg>Acceder</button><button id="help" class="icon-button" type="button" aria-label="Ayuda" title="Ayuda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M9.6 9a2.5 2.5 0 1 1 4.2 1.8c-1.2 1-1.8 1.5-1.8 3M12 17.5h.01"/></svg></button></div>
     </header>
     <div id="profile-menu" class="profile-menu hidden" aria-hidden="true">
       <div class="profile-summary">
-        <div id="profile-avatar" class="profile-avatar" aria-hidden="true"></div>
         <div class="profile-identity">
           <strong id="profile-name"></strong>
           <span id="profile-email"></span>
         </div>
       </div>
-      <input id="profile-avatar-input" class="profile-avatar-input" type="file" accept="image/jpeg,image/png,image/webp" aria-label="Elegir foto de perfil">
-      <button id="change-profile-avatar" class="profile-avatar-change" type="button">Cambiar foto de perfil</button>
       <button id="logout" type="button">Cerrar sesión</button>
     </div>
     <main class="workspace">
       <aside id="sidebar" class="sidebar" aria-label="Panel de capas y herramientas">
         <div class="side-heading"><div class="eyebrow">Sistema educativo · Cartografía</div><h1>Explorá el territorio</h1><p>Un mapa para conocer la educación bonaerense.</p></div>
-        <div class="tabs" role="tablist"><button id="layers-tab" class="tab active" role="tab" aria-selected="true" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>Capas</button><button id="tools-tab" class="tab" role="tab" aria-selected="false" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m14.7 6.3 3 3M4 20l4.2-1L18.7 8.5a2.1 2.1 0 0 0-3-3L5.2 16z"/></svg>Herramientas</button></div>
+        <div id="workspace-tabs" class="tabs" role="tablist"><button id="layers-tab" class="tab active" role="tab" aria-selected="true" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 12 9 5 9-5M3 16l9 5 9-5"/></svg>Capas</button><button id="tools-tab" class="tab" role="tab" aria-selected="false" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m14.7 6.3 3 3M4 20l4.2-1L18.7 8.5a2.1 2.1 0 0 0-3-3L5.2 16z"/></svg>Herramientas</button><button id="users-tab" class="tab" role="tab" aria-selected="false" type="button" aria-controls="users-content"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1M17 11h5M19.5 8.5v5"/></svg>Cuentas</button></div>
         <section id="layer-content" aria-label="Capas del mapa"><div class="side-tools"><div class="filter-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 5 5"/></svg><input id="layer-filter" class="layer-filter" type="search" placeholder="Filtrar capas..." aria-label="Filtrar capas"></div><div class="filter-actions"><button id="active-filter" class="chip" type="button">Solo activas</button><button id="favorite-filter" class="chip" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9z"/></svg>Favoritas</button></div></div><div id="layer-list" class="layer-list" role="tree" aria-label="Capas disponibles"></div></section>
         <section id="tools-content" class="tools-panel"><h2>Herramientas del mapa</h2><button id="measure" class="tool-action" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="m3 17 14-14 4 4L7 21zM14 6l4 4M11 9l2 2M8 12l2 2M5 15l2 2"/></svg><span><strong>Medir distancia</strong><small>Marcá dos puntos en el mapa</small></span></button><button id="locate-tool" class="tool-action" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg><span><strong>Mi ubicación</strong><small>Encontrá escuelas cercanas</small></span></button><button id="clear" class="tool-action" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3 6h18M8 6V4h8v2m3 0-1 14H6L5 6M10 11v5M14 11v5"/></svg><span><strong>Limpiar medición</strong><small>Quitar trazados del mapa</small></span></button></section>
+        <section id="users-content" class="admin-content" aria-labelledby="users-tab">
+          <div class="admin-heading"><div><p class="eyebrow">Administración</p><h2>Cuentas F.E.D. vigentes</h2></div><button id="refresh-fed-accounts" class="admin-refresh" type="button" aria-label="Actualizar cuentas" title="Actualizar cuentas">↻</button></div>
+          <p class="admin-description">Gestioná las cuentas institucionales que pueden cargar datos administrativos.</p>
+          <div id="fed-accounts-status" class="admin-status" role="status" aria-live="polite">Cargando cuentas...</div>
+          <div id="fed-accounts-list" class="fed-accounts-list"></div>
+          <button id="create-fed-account" class="primary-button admin-create-button" type="button">Crear cuenta FED</button>
+          <form id="create-fed-account-form" class="create-fed-account-form" hidden>
+            <label>Nombre<input name="nombre" type="text" autocomplete="given-name" required maxlength="80"></label>
+            <label>Apellido<input name="apellido" type="text" autocomplete="family-name" required maxlength="80"></label>
+            <label>Correo electrónico<input name="email" type="email" autocomplete="email" required maxlength="254"></label>
+            <label>Contraseña<input name="contraseña" type="text" autocomplete="new-password" required minlength="6" maxlength="128"></label>
+            <div class="admin-form-actions"><button class="primary-button" type="submit">Crear cuenta</button><button id="cancel-create-fed-account" class="admin-cancel-button" type="button">Cancelar</button></div>
+          </form>
+        </section>
         <div class="foot"><span class="data-note"><i class="demo-dot"></i>Datos oficiales · GeoJSON</span><span>Actualizado · 2026</span></div>
       </aside>
       <section class="map-stage" aria-label="Mapa interactivo de establecimientos educativos"><div id="map" role="application" aria-label="Mapa de la provincia de Buenos Aires"></div><div class="map-card"><div class="map-card-top"><h2 id="map-title">Provincia de Buenos Aires</h2><span class="live-tag">Mapa activo</span></div><p id="school-count">Cargando establecimientos...</p></div><div class="map-controls"><button id="home-map" class="map-control" type="button" aria-label="Ver todas las escuelas" title="Ver todas las escuelas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m3 10 9-7 9 7v10H3z"/></svg></button><button id="locate-map" class="map-control" type="button" aria-label="Usar mi ubicación" title="Mi ubicación"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></button></div><div class="legend"><div class="legend-title">Establecimientos</div><div class="legend-row"><i class="legend-dot primary"></i>Nivel primario</div><div class="legend-row"><i class="legend-dot secondary"></i>Nivel secundario</div><div class="legend-row"><i class="legend-dot tertiary"></i>Nivel superior</div></div><div class="map-status"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12Z"/><circle cx="12" cy="9" r="2.2"/></svg><span>Establecimientos educativos bonaerenses</span></div><div id="toast" class="toast" role="status" aria-live="polite"></div></section>
@@ -103,8 +129,8 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="./js/supabase-config.js"></script>
   <script src="./js/account.js"></script>
+  <script src="./js/account-admin.js"></script>
   <script src="./js/app.js"></script>
-  <script src="./js/reviews.js"></script>
   <script src="./js/drawing-tools.js"></script>
 </body>
 </html>

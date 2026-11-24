@@ -455,7 +455,8 @@
 }
 
 .fed-administrative-form input,
-.fed-administrative-form select {
+.fed-administrative-form select,
+.fed-administrative-form textarea {
   width: 100%;
   min-height: 32px;
   padding: 6px 8px;
@@ -465,6 +466,11 @@
   border-radius: 5px;
   font: inherit;
   font-size: 11px;
+}
+
+.fed-administrative-form textarea {
+  min-height: 72px;
+  resize: vertical;
 }
 
 .fed-administrative-form .review-submit {

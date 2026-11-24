@@ -2,21 +2,18 @@
   const config=window.SIRIONI_SUPABASE_CONFIG;
   const configured=config?.url&&!config.url.includes("TU-PROYECTO")&&config?.anonKey&&!config.anonKey.includes("TU_CLAVE_PUBLICA");
   const client=configured&&window.supabase?.createClient
-    ?window.supabase.createClient(config.url,config.anonKey)
+    ?window.supabase.createClient(config.url,config.anonKey,{
+      auth:{persistSession:true,autoRefreshToken:true}
+    })
     :null;
   const accountForm=document.getElementById("account-form");
   const accountAccess=document.getElementById("account-access");
   const accountModal=document.getElementById("account-modal");
+  const accountSubtitle=document.getElementById("account-subtitle");
+  const entryModal=document.getElementById("entry-modal");
   const profileMenu=document.getElementById("profile-menu");
   const profileName=document.getElementById("profile-name");
   const profileEmail=document.getElementById("profile-email");
-  const profileAvatar=document.getElementById("profile-avatar");
-  const profileAvatarInput=document.getElementById("profile-avatar-input");
-  const changeProfileAvatar=document.getElementById("change-profile-avatar");
-  const phoneInput=accountForm.querySelector('[name="phone"]');
-  phoneInput.addEventListener("input",()=>{
-    phoneInput.value=phoneInput.value.replace(/[^0-9]/g,"");
-  });
   accountModal.addEventListener("click",event=>{
     if(event.target===accountModal||event.target.classList.contains("modal-backdrop")){
       event.stopImmediatePropagation();
@@ -38,22 +35,55 @@
     accountModal.setAttribute("aria-hidden","true");
     document.body.style.overflow="";
   };
-  const renderAvatar=(container,url,name)=>{
-    container.replaceChildren();
-    container.classList.toggle("profile-avatar-fallback",!url);
-    if(url){
-      const image=document.createElement("img");
-      image.src=url;
-      image.alt="";
-      image.addEventListener("error",()=>{
-        container.textContent=(name||"?").trim().charAt(0).toUpperCase();
-        container.classList.add("profile-avatar-fallback");
-      },{once:true});
-      container.append(image);
-      return;
-    }
-    container.textContent=(name||"?").trim().charAt(0).toUpperCase();
+  const closeEntryModal=()=>{
+    entryModal.classList.add("hidden");
+    entryModal.setAttribute("aria-hidden","true");
+    document.body.style.overflow="";
   };
+  const openEntryModal=()=>{
+    entryModal.classList.remove("hidden");
+    entryModal.setAttribute("aria-hidden","false");
+    document.body.style.overflow="hidden";
+  };
+  const syncAccountForm=(mode)=>{
+    const isSignup=mode==="signup";
+    const firstNameField=accountForm.querySelector('[data-field="firstName"]');
+    const lastNameField=accountForm.querySelector('[data-field="lastName"]');
+    const passwordField=accountForm.querySelector('[data-field="password"]');
+    const passwordInput=passwordField.querySelector("input");
+    const footer=accountModal.querySelector(".modal-footer");
+    accountForm.dataset.mode=mode;
+    firstNameField.style.display=isSignup?"grid":"none";
+    lastNameField.style.display=isSignup?"grid":"none";
+    passwordField.style.display=isSignup?"none":"grid";
+    firstNameField.querySelector("input").required=isSignup;
+    lastNameField.querySelector("input").required=isSignup;
+    passwordInput.required=!isSignup;
+    accountSubtitle.hidden=!isSignup;
+    accountModal.querySelector("#account-title").textContent=isSignup?"Pedir acceso institucional":"Iniciar sesión";
+    accountForm.querySelector('[type="submit"]').textContent=isSignup?"Pedir acceso institucional":"Ingresar";
+    footer.innerHTML=isSignup
+      ?'¿Ya tenés cuenta? <button type="button" class="text-button" data-switch="signin">Ingresar</button>'
+      :'¿Necesitás acceso institucional? <button type="button" class="text-button" data-switch="signup">Solicitar acceso</button>';
+    footer.querySelector(".text-button").addEventListener("click",event=>{
+      syncAccountForm(event.currentTarget.dataset.switch);
+    });
+  };
+  const openAccountModal=(mode)=>{
+    syncAccountForm(mode);
+    accountModal.classList.remove("hidden");
+    accountModal.setAttribute("aria-hidden","false");
+    document.body.style.overflow="hidden";
+  };
+  document.getElementById("entry-request-access").addEventListener("click",()=>{
+    closeEntryModal();
+    openAccountModal("signup");
+  });
+  document.getElementById("entry-signin").addEventListener("click",()=>{
+    closeEntryModal();
+    openAccountModal("signin");
+  });
+  document.getElementById("entry-guest").addEventListener("click",closeEntryModal);
   const renderSignedOut=()=>{
     accountState.user=null;
     accountState.profile=null;
@@ -69,12 +99,19 @@
     notifyAuthChange();
   };
   const renderSignedIn=(user,profile)=>{
-    const name=[profile?.nombre,profile?.apellido].filter(Boolean).join(" ")||user.email;
+    const adminUserId="ea8f2351-fd94-43ba-a827-b66ea7008149";
+    const isAdmin=user.id===adminUserId;
+    const isFed=typeof profile?.role=== "boolean"&&profile.role===true;
+
+    if(!isAdmin&&!isFed){
+      throw new Error("Tu cuenta todavía no fue habilitada por el administrador.");
+    }
+
     accountState.user=user;
     accountState.profile=profile;
-    const role=String(profile?.role??"").trim().toLowerCase();
-    const userType=String(profile?.tipo_usuario??"").trim().toLowerCase();
-    window.sirioniUserRole=profile?.role===true||role==="true"||role==="fed"||userType==="fed"?"fed":null;
+    window.sirioniUserRole=isAdmin?"admin":"fed";
+
+    const name=[profile?.nombre,profile?.apellido].filter(Boolean).join(" ")||user.email;
     accountAccess.classList.remove("quiet");
     accountAccess.classList.add("icon-button","profile-button");
     accountAccess.setAttribute("aria-label","Perfil de "+name);
@@ -82,72 +119,57 @@
     accountAccess.setAttribute("aria-expanded","false");
     profileName.textContent=name;
     profileEmail.textContent=user.email||"";
-    renderAvatar(profileAvatar,profile?.avatar_url,name);
     accountAccess.replaceChildren();
-    if(profile?.avatar_url){
-      const image=document.createElement("img");
-      image.className="profile-button-image";
-      image.src=profile.avatar_url;
-      image.alt="";
-      accountAccess.append(image);
-    }else{
-      accountAccess.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>';
-    }
+    accountAccess.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M5 21v-2a7 7 0 0 1 14 0v2"/></svg>';
     notifyAuthChange();
   };
   const loadProfile=async(user)=>{
     const {data,error}=await client.from("profiles")
-      .select("nombre,apellido,telefono,role,tipo_usuario,avatar_url")
+      .select("id,nombre,apellido,mail,role")
       .eq("id",user.id)
       .maybeSingle();
     if(error)throw error;
-    if(!data)throw new Error("No se encontró el perfil. Ejecutá el SQL de supabase/profiles.sql.");
+    if(!data)throw new Error("No se encontró el perfil asociado a la cuenta.");
     return data;
   };
-  changeProfileAvatar.addEventListener("click",()=>profileAvatarInput.click());
-  profileAvatarInput.addEventListener("change",async()=>{
-    const file=profileAvatarInput.files?.[0];
-    const user=accountState.user;
-    if(!file||!user||!client)return;
-    if(!["image/jpeg","image/png","image/webp"].includes(file.type)){
-      toast("Elegí una imagen JPG, PNG o WEBP.");
-      profileAvatarInput.value="";
-      return;
-    }
-    if(file.size>2*1024*1024){
-      toast("La foto debe pesar 2 MB o menos.");
-      profileAvatarInput.value="";
-      return;
-    }
-    changeProfileAvatar.disabled=true;
+  const establishAccount=async(user)=>{
     try{
-      const path=user.id+"/avatar";
-      const {error:uploadError}=await client.storage.from("avatars").upload(path,file,{
-        cacheControl:"0",
-        contentType:file.type,
-        upsert:true
-      });
-      if(uploadError)throw uploadError;
-      const {data}=client.storage.from("avatars").getPublicUrl(path);
-      const avatarUrl=data.publicUrl;
-      const {error:updateError}=await client.from("profiles")
-        .update({avatar_url:avatarUrl})
-        .eq("id",user.id);
-      if(updateError)throw updateError;
-      renderSignedIn(user,{...accountState.profile,avatar_url:avatarUrl});
-      accountAccess.setAttribute("aria-expanded","true");
-      toast("Foto de perfil actualizada.");
+      const profile=await loadProfile(user);
+      renderSignedIn(user,profile);
     }catch(error){
-      console.error("Error al actualizar la foto de perfil:",error);
-      toast(error.message||"No se pudo actualizar la foto de perfil.");
-    }finally{
-      changeProfileAvatar.disabled=false;
-      profileAvatarInput.value="";
+      const {error:signOutError}=await client.auth.signOut();
+      if(signOutError)console.error("No se pudo cerrar la sesión sin perfil válido:",signOutError);
+      throw error;
     }
-  });
+  };
   accountForm.addEventListener("submit",async(event)=>{
     event.preventDefault();
     event.stopImmediatePropagation();
+    const mode=accountForm.dataset.mode;
+    if(mode==="signup"){
+      const formData=new FormData(accountForm);
+      const recipient=String(config?.accountRequestsEmail||"").trim();
+      if(!recipient||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(recipient)){
+        toast("Configurá el Gmail administrativo en js/supabase-config.js. No se abrió el correo.");
+        return;
+      }
+      const details=[
+        ["Nombre",String(formData.get("firstName")||"").trim()],
+        ["Apellido",String(formData.get("lastName")||"").trim()],
+        ["Correo electrónico",String(formData.get("email")||"").trim()]
+      ];
+      const subject=encodeURIComponent("Solicitud de acceso institucional - Mapa Escolar");
+      const body=encodeURIComponent(details.map(([label,value],index)=>`${index+1}. ${label}: ${value}`).join("\r\n\r\n")+"\r\n");
+      window.location.href="mailto:"+encodeURIComponent(recipient)+"?subject="+subject+"&body="+body;
+      toast("Se abrió un borrador de correo. Revisalo y envialo para completar la solicitud.");
+      closeModal();
+      accountForm.reset();
+      return;
+    }
+    if(!navigator.onLine){
+      toast("Iniciar sesión requiere conexión a internet.");
+      return;
+    }
     if(!client){
       toast(configured
         ?"No se pudo cargar Supabase. Revisá la conexión a internet y recargá la página."
@@ -156,55 +178,33 @@
     }
     const submit=accountForm.querySelector('[type="submit"]');
     const formData=new FormData(accountForm);
-    const mode=accountForm.dataset.mode;
-    const email=String(formData.get("email")||"").trim();
+    const email=String(formData.get("email")||"").trim().toLowerCase();
     const password=String(formData.get("password")||"");
     submit.disabled=true;
     try{
-      if(mode==="signup"){
-        const parts=String(formData.get("fullName")||"").trim().split(/\s+/);
-        const nombre=parts.shift()||"";
-        const apellido=parts.join(" ");
-        const {data,error}=await client.auth.signUp({
-          email,
-          password,
-          options:{data:{
-            nombre,
-            apellido,
-            telefono:String(formData.get("phone")||"").trim()||null,
-            role:String(formData.get("role")||"")
-          }}
-        });
-        if(error)throw error;
-        closeModal();
-        accountForm.reset();
-        if(data.session){
-          const profile=await loadProfile(data.user);
-          renderSignedIn(data.user,profile);
-          toast("Cuenta creada y perfil guardado.");
-        }else{
-          toast("Cuenta creada. Revisá tu correo para confirmar el registro.");
-        }
-      }else{
-        const {data,error}=await client.auth.signInWithPassword({email,password});
-        if(error)throw error;
-        const profile=await loadProfile(data.user);
-        renderSignedIn(data.user,profile);
-        closeModal();
-        accountForm.reset();
-        toast("Sesión iniciada.");
-      }
+      if(!email||!password)throw new Error("Completá el correo y la contraseña.");
+      const {data,error}=await client.auth.signInWithPassword({email,password});
+      if(error)throw error;
+      if(!data.user)throw new Error("Supabase no devolvió el usuario autenticado.");
+      await establishAccount(data.user);
+      closeEntryModal();
+      closeModal();
+      accountForm.reset();
+      toast("Sesión iniciada.");
     }catch(error){
       console.error("Error de cuenta Supabase:",error);
-      toast(error.message||"No se pudo guardar la cuenta. Revisá la configuración de Supabase.");
+      toast(error.message||"No se pudo iniciar sesión.");
     }finally{
       submit.disabled=false;
     }
   },true);
   accountAccess.addEventListener("click",event=>{
-    if(!client||!client.auth||!profileEmail.textContent)return;
     event.preventDefault();
     event.stopImmediatePropagation();
+    if(!client||!client.auth||!profileEmail.textContent){
+      openAccountModal("signin");
+      return;
+    }
     const open=profileMenu.classList.contains("hidden");
     profileMenu.classList.toggle("hidden",!open);
     profileMenu.setAttribute("aria-hidden",String(!open));
@@ -213,27 +213,37 @@
   document.getElementById("logout").addEventListener("click",async(event)=>{
     event.preventDefault();
     event.stopImmediatePropagation();
-    if(!client)return;
-    const {error}=await client.auth.signOut();
-    if(error){
-      console.error("Error al cerrar sesión:",error);
+    try{
+      if(client){
+        const {error}=await client.auth.signOut();
+        if(error)throw error;
+      }
+      profileEmail.textContent="";
+      renderSignedOut();
+      toast("Sesión cerrada.");
+    }catch(error){
+      console.error("Error al cerrar la sesión:",error);
       toast(error.message||"No se pudo cerrar la sesión.");
+    }
+  },true);
+  const restoreSession=async()=>{
+    if(!client){
+      openEntryModal();
       return;
     }
-    profileEmail.textContent="";
-    renderSignedOut();
-    toast("Sesión cerrada.");
-  },true);
-  if(client){
-    client.auth.getSession().then(async({data,error})=>{
-      if(error)throw error;
-      if(data.session){
-        const profile=await loadProfile(data.session.user);
-        renderSignedIn(data.session.user,profile);
-      }
-    }).catch(error=>{
-      console.error("Error al recuperar la sesión de Supabase:",error);
-      toast(error.message||"No se pudo recuperar la sesión.");
-    });
-  }
+    const {data,error}=await client.auth.getSession();
+    if(error)throw error;
+    if(!data.session){
+      localStorage.removeItem("sirioni-profile-login");
+      openEntryModal();
+      return;
+    }
+    await establishAccount(data.session.user);
+    closeEntryModal();
+  };
+  restoreSession().catch(error=>{
+    console.error("Error al recuperar la sesión de Supabase:",error);
+    openEntryModal();
+    toast(error.message||"No se pudo recuperar la sesión. Iniciá sesión nuevamente.");
+  });
 })();

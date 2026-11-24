@@ -1,0 +1,4 @@
+project_id = "hprqjnupixrwadsjbfkd"
+
+[functions.manage-fed-accounts]
+verify_jwt = true

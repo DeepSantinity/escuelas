@@ -1,4 +1,5 @@
 window.SIRIONI_SUPABASE_CONFIG = {
   url: "https://hprqjnupixrwadsjbfkd.supabase.co",
-  anonKey: "sb_publishable_gvnFNOcbD5dBXKfvXTHtlw_g49-nlug"
+  anonKey: "sb_publishable_gvnFNOcbD5dBXKfvXTHtlw_g49-nlug",
+  accountRequestsEmail: "santymunoz850@gmail.com"
 };

@@ -38,25 +38,10 @@
       const identity=document.createElement("div");
       identity.className="review-identity";
       const avatar=document.createElement("span");
-      avatar.className="review-avatar";
+      avatar.className="review-avatar review-avatar-fallback";
       const authorName=review.author_name||"Usuario";
-      if(review.author_avatar_url){
-        const image=document.createElement("img");
-        image.src=review.author_avatar_url;
-        image.alt="";
-        image.addEventListener("error",()=>{
-          avatar.textContent=authorName.trim().charAt(0).toUpperCase();
-          avatar.classList.add("review-avatar-fallback");
-        },{once:true});
-        avatar.append(image);
-      }else{
-        avatar.textContent=authorName.trim().charAt(0).toUpperCase();
-        avatar.classList.add("review-avatar-fallback");
-      }
-      const author=document.createElement("strong");
-      author.className="review-author";
-      author.textContent=authorName;
-      identity.append(avatar,author);
+      avatar.textContent=authorName.trim().charAt(0).toUpperCase();
+      identity.append(avatar);
       const rating=document.createElement("span");
       rating.className="review-rating";
       rating.setAttribute("aria-label",review.rating+" de 5 estrellas");
@@ -87,7 +72,7 @@
     }
     list.textContent="Cargando reseñas...";
     const {data,error}=await client.from("school_reviews")
-      .select("author_name,author_avatar_url,rating,content,created_at")
+      .select("author_name,rating,content,created_at")
       .eq("school_id",schoolId)
       .order("created_at",{ascending:false});
     if(error){
@@ -149,6 +134,10 @@
     form.append(label,textarea,submit);
     form.addEventListener("submit",async event=>{
       event.preventDefault();
+      if(!navigator.onLine){
+        toast("Las reseñas requieren conexión a internet.");
+        return;
+      }
       const currentAccount=window.sirioniAccount;
       if(!currentAccount?.user){
         renderForm(section);
